@@ -9,7 +9,7 @@
   "query_length": 64,
   "max_answer_length": 30,
   "n_best_size": 20,
-  "batch_size": 8,
+  "batch_size": 4,
   "warmup_rate": 0.1,
   "output_path": "output/cmrc2018",
   "output_predictions_path": "output/cmrc2018/predictions.json",
