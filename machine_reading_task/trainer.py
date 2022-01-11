@@ -14,17 +14,25 @@ from metrics import get_eval, write_predictions
 
 
 class Trainer(object):
-    def __init__(self, args):
+    def __init__(self, args, fold=0):
         self.args = args
         with open(args.config_path, "r") as fr:
             self.config = json.load(fr)
         self.__bert_checkpoint_path = os.path.join(self.config["bert_model_path"], "bert_model.ckpt")
 
+        data = json.load(open('data/cmrc2018/cp2021.json'))
+        self.eval_data = {'data': []}
+        self.train_data = {'data': []}
+        for index in range(len(data['data'])):
+            if index % fold == 0:
+                self.eval_data['data'].append(data['data'][index])
+            else:
+                self.train_data['data'].append(data['data'][index])
         # 加载数据集
         self.data_obj = self.load_data()
-        self.t_features = self.data_obj.gen_data(self.config["train_data"])
+        self.t_features = self.data_obj.gen_data(self.train_data)
 
-        self.e_examples, self.e_features = self.data_obj.gen_data(self.config["eval_data"], is_training=False)
+        self.e_examples, self.e_features = self.data_obj.gen_data(self.eval_data, is_training=False)
         print("train data size: {}".format(len(self.t_features)))
         print("eval data size: {}".format(len(self.e_features)))
 
@@ -97,7 +105,7 @@ class Trainer(object):
                                           output_prediction_file=self.config["output_predictions_path"],
                                           output_nbest_file=self.config["output_nbest_path"])
 
-                        result = get_eval(original_file=self.config["eval_data"],
+                        result = get_eval(original_data=self.eval_data,
                                           prediction_file=self.config["output_predictions_path"])
 
                         print("\n")
@@ -120,5 +128,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config_path", help="config path of model")
     args = parser.parse_args()
-    trainer = Trainer(args)
-    trainer.train()
+    for fold in range(10):
+        print(f'\033[92mtraining on Fold {fold}\033[0m')
+        trainer = Trainer(args, fold)
+        trainer.train()
