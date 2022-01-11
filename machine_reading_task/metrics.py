@@ -337,15 +337,15 @@ def calc_em_score(answers, prediction):
     return em
 
 
-def get_eval(original_file, prediction_file):
+def get_eval(original_data, prediction_file):
     """
     得到预测的性能指标
     :param original_file:
     :param prediction_file:
     :return:
     """
-    with open(original_file, 'r', encoding="utf8") as fr:
-        original_data = json.load(fr)
+    # with open(original_file, 'r', encoding="utf8") as fr:
+    #     original_data = json.load(fr)
 
     with open(prediction_file, "r", encoding="utf8") as fr:
         prediction_data = json.load(fr)
