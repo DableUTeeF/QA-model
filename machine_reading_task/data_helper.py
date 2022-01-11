@@ -125,15 +125,15 @@ class TrainData(object):
                 pre_is_letter = False
         return new_context
 
-    def read_data(self, file_path, is_training):
+    def read_data(self, train_data, is_training):
         """
         :param file_path:
         :param is_training:
         :return:
         """
-        with open(file_path, 'r', encoding="utf8") as f:
-            train_data = json.load(f)
-            train_data = train_data['data']
+        # with open(file_path, 'r', encoding="utf8") as f:
+        #     train_data = json.load(f)
+        #     train_data = train_data['data']
 
         examples = []
         # 1, 遍历所有的训练数据，取出每一篇文章
@@ -347,7 +347,7 @@ class TrainData(object):
                 unique_id += 1
         return features
 
-    def gen_data(self, file_path, is_training=True):
+    def gen_data(self, data, is_training=True):
         """
         生成数据
         :param file_path:
@@ -355,7 +355,7 @@ class TrainData(object):
         :return:
         """
         # 1，读取原始数据
-        examples = self.read_data(file_path, is_training)
+        examples = self.read_data(data, is_training)
         print("read finished")
 
         # 2，输入转索引
